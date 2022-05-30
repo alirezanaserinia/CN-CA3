@@ -46,23 +46,23 @@ int main(){
 		//for (int i=0; i<splited_command.size();i++)
 		//	std::cout<< splited_command[i]<< ' ';
 		//std::cout<< '\n';
-		if (splited_command.size()>0){
-			if (splited_command[0]== "topology"){
+		if (splited_command.size() > 0){
+			if (splited_command[0] == "topology"){
 				create_edge(splited_command);
 			}
-			else if (splited_command[0]== "show"){
+			else if (splited_command[0] == "show"){
 				show_topology();
 			}
-			else if (splited_command[0]== "lsrp"){
+			else if (splited_command[0] == "lsrp"){
 				link_state();
 			}
-			else if (splited_command[0]== "dvrp"){
+			else if (splited_command[0] == "dvrp"){
 				distance_vector();
 			}
-			else if (splited_command[0]== "modify"){
+			else if (splited_command[0] == "modify"){
 				update_edge();
 			}
-			else if (splited_command[0]== "remove"){
+			else if (splited_command[0] == "remove"){
 				remove_edge();
 			}
 			else {
@@ -235,18 +235,18 @@ void create_edge(std::vector<std::string> command){
 
 void show_topology(){
 	std::cout<< "u|v |";
-	for (int i= 0; i<number_of_nodes; i++){
-		std::cout<< ' '<< i+ 1;
+	for (int i = 0; i < number_of_nodes; i++){
+		std::cout<< '\t'<< i + 1;
 	}
 	std::cout<<'\n';
-	for (int i= 0; i<2*number_of_nodes+ 5; i++){
-		std::cout<< '-';
+	for (int i = 0; i < 2*number_of_nodes + 4; i++){
+		std::cout<< "---";
 	}
 	std::cout<<'\n';
-	for (int i=0; i<number_of_nodes; i++){
-		std::cout<< i+ 1<< " |";
-		for (int j=0; j<number_of_nodes; j++){
-			std::cout<< ' '<< weight[i][j];
+	for (int i = 0; i < number_of_nodes; i++){
+		std::cout<< " " << i + 1 << "  |";
+		for (int j = 0; j < number_of_nodes; j++){
+			std::cout<< '\t'<< weight[i][j];
 		}
 		std::cout<<'\n';
 	}	
