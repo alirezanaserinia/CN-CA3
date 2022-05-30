@@ -21,15 +21,14 @@ int number_of_nodes = 1;
 std::vector< std::vector<int> > adj(1);
 std::vector< std::vector<int> > weight(1,std::vector<int> (1,-1));
 
-// void create_edge(std::vector<std::string> command);
 bool is_delimiter(char charachter);
 std::vector<std::string> split (std::string str);
 
-void remove_edge();
+void remove_edge(std::vector<std::string> command);
 void show_topology();
 void distance_vector();
 void link_state();
-void update_edge();
+void update_edge(std::vector<std::string> command);
 void create_edge(std::vector<std::string> command);
 void extend_nodes(int new_number_of_nodes);
 
@@ -42,28 +41,25 @@ int main(){
 	
 	while (getline(std::cin,command)){
 		std::vector<std::string> splited_command= split(command);
-		//std::cout<< "Command is: ";
-		//for (int i=0; i<splited_command.size();i++)
-		//	std::cout<< splited_command[i]<< ' ';
-		//std::cout<< '\n';
+
 		if (splited_command.size() > 0){
-			if (splited_command[0] == "topology"){
+			if (splited_command[0] == "topology") {
 				create_edge(splited_command);
 			}
-			else if (splited_command[0] == "show"){
+			else if (splited_command[0] == "show") {
 				show_topology();
 			}
-			else if (splited_command[0] == "lsrp"){
+			else if (splited_command[0] == "lsrp") {
 				link_state();
 			}
-			else if (splited_command[0] == "dvrp"){
+			else if (splited_command[0] == "dvrp") {
 				distance_vector();
 			}
-			else if (splited_command[0] == "modify"){
-				update_edge();
+			else if (splited_command[0] == "modify") {
+				update_edge(splited_command);
 			}
-			else if (splited_command[0] == "remove"){
-				remove_edge();
+			else if (splited_command[0] == "remove") {
+				remove_edge(splited_command);
 			}
 			else {
 				std::cout << "Bad input. Try again\n";
@@ -176,8 +172,7 @@ void belman_ford(int n,std::vector< std::vector<int> >& adj,
 	}
 }
 */
-std::vector<std::string> split (std::string str)  
-{  
+std::vector<std::string> split (std::string str) {  
 	std::string word= "";
 	std::vector<std::string> splited_string;
 	for (char letter: str){
@@ -191,13 +186,9 @@ std::vector<std::string> split (std::string str)
 			word+= letter;
 		}
 	}
-	if (word!= ""){
+	if (word!= "")
 		splited_string.push_back(word);
-	}
-	// for (int i=0; i<splited_string.size();i++){
-	// 	std::cout<< " |"<<splited_string[i];
-	// }
-	// std::cout<<'\n';
+	
 	return splited_string;
 } 
 
@@ -234,7 +225,7 @@ void create_edge(std::vector<std::string> command){
 }
 
 void show_topology(){
-	std::cout<< "u|v |";
+	std::cout<< "u\\v |";
 	for (int i = 0; i < number_of_nodes; i++){
 		std::cout<< '\t'<< i + 1;
 	}
@@ -267,7 +258,34 @@ void extend_nodes(int new_number_of_nodes){
 	}
 }
 
-void remove_edge(){}
+void remove_edge(std::vector<std::string> command) {
+	int source_node= std::stoi(command[1]) - 1;
+	int destination_node= std::stoi(command[2]) - 1;
+	if (weight[source_node][destination_node] == -1)
+		return;
+	adj[source_node].erase(std::remove(adj[source_node].begin(),
+	adj[source_node].end(), destination_node), adj[source_node].end());
+	adj[destination_node].erase(std::remove(adj[destination_node].begin(),
+	adj[destination_node].end(), source_node), adj[destination_node].end());
+	weight[source_node][destination_node]= -1;
+	weight[destination_node][source_node]= -1;
+}
+
 void distance_vector(){}
 void link_state(){}
-void update_edge(){}
+void update_edge(std::vector<std::string> command) {
+	int source_node = std::stoi(command[1]) - 1;
+	int destination_node = std::stoi(command[2]) - 1;
+	int new_weight = std::stoi(command[3]);
+	if (source_node == destination_node)
+		std::cout<< "Source and Destibation are same! node: "+ 
+				std::to_string(source_node + 1) + '\n';
+	if (weight[source_node][destination_node] == -1) {
+		adj[source_node].push_back(destination_node);
+		adj[destination_node].push_back(source_node);
+		
+	}
+	weight[source_node][destination_node] = new_weight;
+	weight[destination_node][source_node] = new_weight;
+		
+}
