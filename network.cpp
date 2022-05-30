@@ -36,7 +36,7 @@ void extend_nodes(int new_number_of_nodes);
 //void belman_ford(int n,std::vector< std::vector<int> >& adj,
 //					long int* dist,int* parent,std::vector< std::vector<int> >& weight);
 
-int main(){
+int main() {
 	std::string command;
 	
 	while (getline(std::cin,command)) {
@@ -172,18 +172,18 @@ void belman_ford(int n,std::vector< std::vector<int> >& adj,
 	}
 }
 */
-std::vector<std::string> split (std::string str) {  
+std::vector<std::string> split(std::string str) {  
 	std::string word = "";
 	std::vector<std::string> splited_string;
-	for (char letter: str){
-		if (is_delimiter(letter)){
-			if (word!= "") {
+	for (char letter: str) {
+		if (is_delimiter(letter)) {
+			if (word != "") {
 				splited_string.push_back(word);
 			}
-			word= "";
+			word = "";
 		}
 		else{
-			word+= letter;
+			word += letter;
 		}
 	}
 	if (word != "")
@@ -192,24 +192,24 @@ std::vector<std::string> split (std::string str) {
 	return splited_string;
 } 
 
-bool is_delimiter(char charachter){
-	return charachter== ' ' || charachter == '-';
+bool is_delimiter(char charachter) {
+	return charachter == ' ' || charachter == '-';
 }
 
-void create_edge(std::vector<std::string> command){
-	for (int i= 1; i<command.size(); i += 3){
-		int source_node= std::stoi(command[i]) - 1;
-		int destination_node= std::stoi(command[i + 1]) - 1;
-		int cost_of_edge= std::stoi(command[i + 2]);
-		if (source_node== destination_node){
+void create_edge(std::vector<std::string> command) {
+	for (int i = 1; i < command.size(); i += 3) {
+		int source_node = std::stoi(command[i]) - 1;
+		int destination_node = std::stoi(command[i + 1]) - 1;
+		int cost_of_edge = std::stoi(command[i + 2]);
+		if (source_node == destination_node) {
 			std::cout<< "Source and Destibation are same! node: "+ 
 				std::to_string(source_node + 1) + '\n';
 			continue;
 		}
-		if (source_node>= number_of_nodes){
+		if (source_node >= number_of_nodes) {
 			extend_nodes(source_node);
 		}
-		if (destination_node>= number_of_nodes){
+		if (destination_node >= number_of_nodes) {
 			extend_nodes(destination_node);
 		}
 
@@ -218,32 +218,32 @@ void create_edge(std::vector<std::string> command){
 		adj[destination_node].push_back(source_node);
 		weight[destination_node][source_node]= cost_of_edge;
 
-		for (int i = 0; i < number_of_nodes; i++){
+		for (int i = 0; i < number_of_nodes; i++) {
 			weight[i][i]= 0;
 		}
 	}
 }
 
-void show_topology(){
+void show_topology() {
 	std::cout<< "u\\v |";
-	for (int i = 0; i < number_of_nodes; i++){
-		std::cout<< '\t'<< i + 1;
+	for (int i = 0; i < number_of_nodes; i++) {
+		std::cout << '\t'<< i + 1;
 	}
-	std::cout<<'\n';
-	for (int i = 0; i < 2*number_of_nodes + 4; i++){
+	std::cout <<'\n';
+	for (int i = 0; i < 2 * number_of_nodes + 4; i++) {
 		std::cout<< "---";
 	}
-	std::cout<<'\n';
-	for (int i = 0; i < number_of_nodes; i++){
-		std::cout<< " " << i + 1 << "  |";
-		for (int j = 0; j < number_of_nodes; j++){
-			std::cout<< '\t'<< weight[i][j];
+	std::cout <<'\n';
+	for (int i = 0; i < number_of_nodes; i++) {
+		std::cout << " " << i + 1 << "  |";
+		for (int j = 0; j < number_of_nodes; j++) {
+			std::cout << '\t'<< weight[i][j];
 		}
-		std::cout<<'\n';
+		std::cout << '\n';
 	}	
 }
 
-void extend_nodes(int new_number_of_nodes){
+void extend_nodes(int new_number_of_nodes) {
 	if (new_number_of_nodes >= number_of_nodes){
 		int prev_number_of_nodes = number_of_nodes;
 		while(new_number_of_nodes >= number_of_nodes){
@@ -251,8 +251,8 @@ void extend_nodes(int new_number_of_nodes){
 			weight.push_back(std::vector<int> (prev_number_of_nodes, -1));
 			number_of_nodes++;
 		}
-		for (int i=0;i<number_of_nodes; i++){
-			for (int j= prev_number_of_nodes; j<number_of_nodes; j++)
+		for (int i = 0; i < number_of_nodes; i++){
+			for (int j = prev_number_of_nodes; j < number_of_nodes; j++)
 				weight[i].push_back(-1);
 		}
 	}
@@ -267,20 +267,22 @@ void remove_edge(std::vector<std::string> command) {
 	adj[source_node].end(), destination_node), adj[source_node].end());
 	adj[destination_node].erase(std::remove(adj[destination_node].begin(),
 	adj[destination_node].end(), source_node), adj[destination_node].end());
-	weight[source_node][destination_node]= -1;
-	weight[destination_node][source_node]= -1;
+	weight[source_node][destination_node] = -1;
+	weight[destination_node][source_node] = -1;
 }
 
 void distance_vector(std::vector<std::string> command) {}
 
-void link_state(std::vector<std::string> command) {}
+void link_state(std::vector<std::string> command) {
+
+}
 
 void update_edge(std::vector<std::string> command) {
 	int source_node = std::stoi(command[1]) - 1;
 	int destination_node = std::stoi(command[2]) - 1;
 	int new_weight = std::stoi(command[3]);
 	if (source_node == destination_node)
-		std::cout<< "Source and Destibation are same! node: "+ 
+		std::cout<< "Source and Destibation are same! node: " + 
 				std::to_string(source_node + 1) + '\n';
 	if (weight[source_node][destination_node] == -1) {
 		adj[source_node].push_back(destination_node);
