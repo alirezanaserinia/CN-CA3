@@ -2,6 +2,7 @@
 #include <utility>
 #include <vector>
 #include <climits>
+#include <string>
 #include <algorithm>
 
 // struct edge_tuple
@@ -16,11 +17,11 @@
 // 	}
 // } typedef edge;
 
-int number_of_nodes= 1;
+int number_of_nodes = 1;
 std::vector< std::vector<int> > adj(1);
 std::vector< std::vector<int> > weight(1,std::vector<int> (1,-1));
 
-void create_edge(std::vector<std::string> command);
+// void create_edge(std::vector<std::string> command);
 bool is_delimiter(char charachter);
 std::vector<std::string> split (std::string str);
 
@@ -49,20 +50,23 @@ int main(){
 			if (splited_command[0]== "topology"){
 				create_edge(splited_command);
 			}
-			if (splited_command[0]== "show"){
+			else if (splited_command[0]== "show"){
 				show_topology();
 			}
-			if (splited_command[0]== "lsrp"){
+			else if (splited_command[0]== "lsrp"){
 				link_state();
 			}
-			if (splited_command[0]== "dvrp"){
+			else if (splited_command[0]== "dvrp"){
 				distance_vector();
 			}
-			if (splited_command[0]== "modify"){
+			else if (splited_command[0]== "modify"){
 				update_edge();
 			}
-			if (splited_command[0]== "remove"){
+			else if (splited_command[0]== "remove"){
 				remove_edge();
+			}
+			else {
+				std::cout << "Bad input. Try again\n";
 			}
 		}
 	}
