@@ -21,6 +21,8 @@ int number_of_nodes = 1;
 std::vector< std::vector<int> > adj(1);
 std::vector< std::vector<int> > weight(1,std::vector<int> (1,-1));
 
+void print_path(int source, int i, int* parent);
+int find_next_hop(int source, int i,int* parent);
 bool is_delimiter(char charachter);
 std::vector<std::string> split (std::string str);
 
@@ -31,10 +33,9 @@ void link_state(std::vector<std::string> command);
 void update_edge(std::vector<std::string> command);
 void create_edge(std::vector<std::string> command);
 void extend_nodes(int new_number_of_nodes);
+void print_distance_vector_by_source(int source);
+void belman_ford(int source,long int* dist,int* parent);
 
-//bool is_in(std::vector<edge> path_edge,edge cur_edge);
-//void belman_ford(int n,std::vector< std::vector<int> >& adj,
-//					long int* dist,int* parent,std::vector< std::vector<int> >& weight);
 
 int main() {
 	std::string command;
@@ -66,112 +67,33 @@ int main() {
 			}
 		}
 	}
-	/*
-	int n,m;
-	std::cin>> n>>m;
-	std::vector< std::vector<int> > adj(n);
-	std::vector< std::vector<int> > new_adj(n);
-	std::vector< std::vector<int> > weight(n,std::vector<int> (n,INT_MAX));
-
-	for (int i= 0; i< m; i++){
-		int u,v;
-		std::cin>> u>>v;
-		adj[u-1].push_back(v-1);
-		weight[u-1][v-1]= 2;
-	}
-	for (int i=0;i<n;i++)
-		weight[i][i]=0;
-
-	long int dist[n];
-	int parent[n];
-	belman_ford(n,adj,dist,parent,weight);
-
-	int v= n-1;
-	std::vector<edge> path_edge;
-	while(parent[v]!= -1){
-		path_edge.push_back({parent[v],v});
-		v= parent[v];
-	}
-	// for (int i=0;i<path_edge.size();i++)
-	// 	std::cout<< "Path:: U: "<< path_edge[i].u<< " V: "<<path_edge[i].v<<' ';
-	// std::cout<<'\n';
-
-	for (int i=0; i<n; i++){
-		for (int j=0; j< adj[i].size();j++){
-			int u= i, v= adj[i][j];
-			edge cur_edge(i,adj[i][j]);
-			if (!is_in(path_edge,cur_edge)){
-				auto it= std::find(adj[u].begin(),adj[u].end(),v);
-				//adj[u].erase(it);
-				new_adj[v].push_back(u);
-				//adj[v].push_back(u);
-				weight[u][v]= INT_MAX;
-				weight[v][u]= -1;
-				//std::cout<<"("<<u<<" , "<<v<<") ";	
-			}
-			else
-				new_adj[u].push_back(v);
-		}
-	}
-	// std::cout<<'\n';
-
-	// for (int i=0; i<n; i++){
-	// 	for (int j=0; j< n;j++){
-	// 		std::cout<< weight[i][j]<< ' ';
-	// 	}
-	// 	std::cout<<'\n';
-	// }
-
-	belman_ford(n,new_adj,dist,parent,weight);
-
-	bool possibility= true;
-	for (int i=0; i<n; i++){
-		for (int j=0; j<new_adj[i].size();j++){
-			int u=i, v= new_adj[i][j];
-			if (dist[v]> dist[u]+weight[u][v]){
-				possibility= false;
-			}
-		}
-	}
-
-	if (possibility)
-		std::cout<<"Yes\n";
-	else
-		std::cout<<"No\n";
-	*/
 	return 0;
 }
-/*
-bool is_in(std::vector<edge> path_edge,edge cur_edge){
-	for (int i=0; i< path_edge.size();i++)
-		if (path_edge[i]== cur_edge)
-			return true;
-	return false;
-}
 
-void belman_ford(int n,std::vector< std::vector<int> >& adj,
-					long int* dist,int* parent,std::vector< std::vector<int> >& weight){
+void belman_ford(int source,long int* dist,int* parent){
 
-	for (int i=0; i<n; i++){
-		dist[i]=INT_MAX;
+	for (int i=0; i< number_of_nodes; i++){
+		dist[i]= INT_MAX;
 		parent[i]= -1;
 	}
 
-	dist[0]=0;
+	dist[source]=0;
 
-	for (int k=0; k<n-2;k++){
-		for (int i=0; i<n; i++){
+	for (int k=0; k<number_of_nodes;k++){
+		for (int i=0; i<number_of_nodes; i++){
 			for (int j=0; j<adj[i].size();j++){
-				int u=i, v= adj[i][j];
-				if (dist[v]> dist[u]+weight[u][v]){
-					dist[v]= dist[u]+weight[u][v];
+				int u=i, v= adj[i][j], edge_weight= weight[u][v];
+				if (weight[u][v]== -1)
+					edge_weight= INT_MAX;
+				if (dist[v]> dist[u]+ edge_weight){
+					dist[v]= dist[u]+ edge_weight;
 					parent[v]= u;
 				}
 			}
 		}
 	}
 }
-*/
+
 std::vector<std::string> split(std::string str) {  
 	std::string word = "";
 	std::vector<std::string> splited_string;
@@ -259,8 +181,8 @@ void extend_nodes(int new_number_of_nodes) {
 }
 
 void remove_edge(std::vector<std::string> command) {
-	int source_node= std::stoi(command[1]) - 1;
-	int destination_node= std::stoi(command[2]) - 1;
+	int source_node = std::stoi(command[1]) - 1;
+	int destination_node = std::stoi(command[2]) - 1;
 	if (weight[source_node][destination_node] == -1)
 		return;
 	adj[source_node].erase(std::remove(adj[source_node].begin(),
@@ -271,10 +193,78 @@ void remove_edge(std::vector<std::string> command) {
 	weight[destination_node][source_node] = -1;
 }
 
-void distance_vector(std::vector<std::string> command) {}
+void print_path(int source, int i, int* parent) {
+	std::cout << '[';
+	if (i == source) {
+		std::cout << i + 1;
+		std::cout <<']';
+		return;
+	}
+	std::vector<int> path_leaf_to_root;
+	while(parent[i] != source) {
+		path_leaf_to_root.push_back(i);
+		i = parent[i];
+	}
+	path_leaf_to_root.push_back(i);
+	std::cout << source + 1;
+	for (int i = path_leaf_to_root.size() - 1; i >= 0; i--) {
+		std::cout << "->" + std::to_string(path_leaf_to_root[i] + 1);
+	}
+	std::cout << ']';
+}
 
+int find_next_hop(int source, int i, int* parent) {
+	if (i == source){
+		return i;
+	}
+	while(parent[i] != source){
+		i = parent[i];
+	}
+	return i;
+}
+void print_distance_vector_by_source(int source_node) {
+	long int* dist = new long int [number_of_nodes];
+	int* parent = new int [number_of_nodes];
+	// long int dist[number_of_nodes];
+	// int parent[number_of_nodes];
+	belman_ford(source_node, dist, parent);
+	std::cout << '\n';
+	std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
+	std::cout << "----------------------------------------------\n";
+	for (int i = 0; i < number_of_nodes; i++){
+		std::cout << i + 1 << '\t';
+		int next_hop = find_next_hop(source_node, i, parent) + 1;
+		std::cout << next_hop << "\t\t";
+		std::cout << dist[i] << '\t';
+		print_path(source_node, i, parent);
+		std::cout << '\n';
+	}
+}
+void distance_vector(std::vector<std::string> command){
+	if (command.size() == 2){
+		int source_node = std::stoi(command[1]) - 1;
+		print_distance_vector_by_source(source_node);
+	}
+	else if (command.size() == 1){
+		for (int source_node = 0; source_node < number_of_nodes; source_node++){
+			print_distance_vector_by_source(source_node);
+		}
+	}
+	else {
+		std::cout << "invalid input!\n";
+	}
+}
 void link_state(std::vector<std::string> command) {
-
+	if (command.size() == 2) {
+		int source_node = std::stoi(command[1]) - 1;
+	}
+	else if (command.size() == 1) {
+		
+		
+	}
+	else {
+		std::cout << "invalid input!\n";
+	}
 }
 
 void update_edge(std::vector<std::string> command) {
