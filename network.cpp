@@ -227,6 +227,7 @@ void print_path_lsrp(int source, int i, int* parent) {
 
 void print_lsrp_table(int source, ll* dist, int* parent) {
 	std::cout << "Path:\t[s] --> [d]\tMin-Cost\tShortest Path\n";
+	lsrp_longest_path = 0;
 	for (int i = 0; i < number_of_nodes; i++) {
 		if (i == source)
 			continue;
