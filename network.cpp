@@ -111,6 +111,15 @@ void extend_nodes(int new_number_of_nodes) {
 }
 
 void create_edge(std::vector<std::string> command) {
+	if (adj.size() > 0) {
+		adj.clear();
+		adj.push_back(std::vector<int>());
+		number_of_nodes = 1;
+	}
+	if (weight.size() > 0) {
+		weight.clear();
+		weight.push_back(std::vector<int>(number_of_nodes, -1));
+	}
 	for (int i = 1; i < command.size(); i += 3) {
 		int source_node = std::stoi(command[i]) - 1;
 		int destination_node = std::stoi(command[i + 1]) - 1;
@@ -133,7 +142,7 @@ void create_edge(std::vector<std::string> command) {
 		weight[destination_node][source_node]= cost_of_edge;
 
 		for (int i = 0; i < number_of_nodes; i++) {
-			weight[i][i]= 0;
+			weight[i][i] = 0;
 		}
 	}
 }
@@ -228,7 +237,10 @@ void print_iteration(int &iter, long int* dist) {
 			std::cout << dist[i] << "|\t";
 	}
 	std::cout << "\n";
-	std::cout << "---------------------------------------------------------\n";
+	for (int i = 0; i < 8 * number_of_nodes + 12; i++) {
+		std::cout << "-";
+	}
+	std::cout << "\n";
 }
 
 void dijkstra(int source, long int* dist, int* parent) {
@@ -287,7 +299,9 @@ void print_lsrp_by_source(int source_node) {
 	long int* dist = new long int [number_of_nodes];
 	int* parent = new int [number_of_nodes];
 	dijkstra(source_node, dist, parent);
-	print_lsrp_table(source_node, dist, parent);	
+	print_lsrp_table(source_node, dist, parent);
+	delete []dist;
+	delete []parent;
 }
 
 void link_state(std::vector<std::string> command) {
@@ -297,7 +311,9 @@ void link_state(std::vector<std::string> command) {
 	}
 	else if (command.size() == 1) {
 		for (int source_node = 0; source_node < number_of_nodes; source_node++) {
+			std::cout << "\nSource Node : " << source_node + 1 << "\n";
 			print_lsrp_by_source(source_node);
+			std::cout << "\n";
 		}
 	}
 	else {
@@ -336,15 +352,15 @@ int find_next_hop(int source, int i, int* parent) {
 	return i;
 }
 
-void belman_ford(int source, long int* dist, int* parent){
+void belman_ford(int source, long int* dist, int* parent) {
 	for (int i = 0; i < number_of_nodes; i++){
 		dist[i] = INT_MAX;
 		parent[i] = -1;
 	}
 	dist[source] = 0;
-	for (int k = 0; k < number_of_nodes; k++){
-		for (int i = 0; i < number_of_nodes; i++){
-			for (int j = 0; j < adj[i].size(); j++){
+	for (int k = 0; k < number_of_nodes; k++) {
+		for (int i = 0; i < number_of_nodes; i++) {
+			for (int j = 0; j < adj[i].size(); j++) {
 				int u = i, v = adj[i][j], edge_weight = weight[u][v];
 				if (weight[u][v] == -1)
 					edge_weight = INT_MAX;
@@ -360,8 +376,6 @@ void belman_ford(int source, long int* dist, int* parent){
 void print_dvrp_by_source(int source_node) {
 	long int* dist = new long int [number_of_nodes];
 	int* parent = new int [number_of_nodes];
-	// long int dist[number_of_nodes];
-	// int parent[number_of_nodes];
 	belman_ford(source_node, dist, parent);
 	std::cout << '\n';
 	std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
@@ -374,6 +388,8 @@ void print_dvrp_by_source(int source_node) {
 		print_path_dvrp(source_node, i, parent);
 		std::cout << '\n';
 	}
+	delete []dist;
+	delete []parent;
 }
 
 void distance_vector(std::vector<std::string> command) {
@@ -383,7 +399,9 @@ void distance_vector(std::vector<std::string> command) {
 	}
 	else if (command.size() == 1){
 		for (int source_node = 0; source_node < number_of_nodes; source_node++) {
+			std::cout << "\nSource Node : " << source_node + 1 << "\n";
 			print_dvrp_by_source(source_node);
+			std::cout << "\n";
 		}
 	}
 	else {
