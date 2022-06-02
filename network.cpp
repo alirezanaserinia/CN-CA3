@@ -203,12 +203,12 @@ void print_path_lsrp(int source, int i, int* parent) {
 
 void print_lsrp_table(int source, long int* dist, int* parent) {
 	std::cout << "Path:\t[s] --> [d]\tMin-Cost\tShortest Path\n";
-	std::cout << "\t---------\t---------\t-------------\n";
+	std::cout << "\t-----------\t---------\t-----------------\n";
 	for (int i = 0; i < number_of_nodes; i++) {
 		if (i == source)
 			continue;
 		else {
-		std::cout << "\t[" << source + 1 << "] --> [" << i + 1 << "]\t" << dist[i] << "\t\t";
+		std::cout << "\t[" << source + 1 << "] --> [" << i + 1 << "]\t   " << dist[i] << "\t\t";
 		print_path_lsrp(source, i , parent); 
 		}
 	}
@@ -228,7 +228,7 @@ void print_iteration(int &iter, long int* dist) {
 			std::cout << dist[i] << "|\t";
 	}
 	std::cout << "\n";
-	std::cout << "---------------------------------------------------\n";
+	std::cout << "---------------------------------------------------------\n";
 }
 
 void dijkstra(int source, long int* dist, int* parent) {
@@ -365,7 +365,7 @@ void print_dvrp_by_source(int source_node) {
 	belman_ford(source_node, dist, parent);
 	std::cout << '\n';
 	std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
-	std::cout << "---------------------------------------------------\n";
+	std::cout << "---------------------------------------------------------\n";
 	for (int i = 0; i < number_of_nodes; i++){
 		std::cout << i + 1 << '\t';
 		int next_hop = find_next_hop(source_node, i, parent) + 1;
