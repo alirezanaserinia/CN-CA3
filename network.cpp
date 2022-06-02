@@ -44,7 +44,7 @@ int main() {
 	while (getline(std::cin,command)) {
 		std::vector<std::string> splited_command = split(command);
 
-		if (splited_command.size() > 0){
+		if (splited_command.size() > 0) {
 			if (splited_command[0] == "topology") {
 				create_edge(splited_command);
 			}
@@ -188,7 +188,6 @@ void remove_edge(std::vector<std::string> command) {
 
 // Link State
 void print_path_lsrp(int source, int i, int* parent) {
-
 	std::vector<int> path_leaf_to_root;
 	while(parent[i] != source) {
 		path_leaf_to_root.push_back(i);
@@ -210,10 +209,6 @@ void print_lsrp_table(int source, long int* dist, int* parent) {
 			continue;
 		else {
 		std::cout << "\t[" << source + 1 << "] --> [" << i + 1 << "]\t" << dist[i] << "\t\t";
-		
-
-		
-
 		print_path_lsrp(source, i , parent); 
 		}
 	}
@@ -233,7 +228,7 @@ void print_iteration(int &iter, long int* dist) {
 			std::cout << dist[i] << "|\t";
 	}
 	std::cout << "\n";
-	std::cout << "----------------------------------------------\n";
+	std::cout << "---------------------------------------------------\n";
 }
 
 void dijkstra(int source, long int* dist, int* parent) {
@@ -275,10 +270,6 @@ void dijkstra(int source, long int* dist, int* parent) {
 			if (V_S.find(adj[u][i]) != V_S.end()) {
 				v = adj[u][i];
 				edge_weight = weight[u][v];
-
-				/////////////////////
-				// std::cout << min << "|" << u + 1 << " " << v + 1 << "|" << edge_weight << "&\n";
-				
 				
 				if (weight[u][v] == -1)
 					edge_weight = INT_MAX;
@@ -303,11 +294,11 @@ void link_state(std::vector<std::string> command) {
 	if (command.size() == 2) {
 		int source_node = std::stoi(command[1]) - 1;
 		print_lsrp_by_source(source_node);
-
 	}
 	else if (command.size() == 1) {
-		
-		
+		for (int source_node = 0; source_node < number_of_nodes; source_node++) {
+			print_lsrp_by_source(source_node);
+		}
 	}
 	else {
 		std::cout << "invalid input!\n";
@@ -374,7 +365,7 @@ void print_dvrp_by_source(int source_node) {
 	belman_ford(source_node, dist, parent);
 	std::cout << '\n';
 	std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
-	std::cout << "----------------------------------------------\n";
+	std::cout << "---------------------------------------------------\n";
 	for (int i = 0; i < number_of_nodes; i++){
 		std::cout << i + 1 << '\t';
 		int next_hop = find_next_hop(source_node, i, parent) + 1;
@@ -391,7 +382,7 @@ void distance_vector(std::vector<std::string> command) {
 		print_dvrp_by_source(source_node);
 	}
 	else if (command.size() == 1){
-		for (int source_node = 0; source_node < number_of_nodes; source_node++){
+		for (int source_node = 0; source_node < number_of_nodes; source_node++) {
 			print_dvrp_by_source(source_node);
 		}
 	}
