@@ -9,6 +9,7 @@
 typedef long long int ll;
 
 int number_of_nodes = 1;
+int lsrp_longest_path = 0;
 std::vector< std::vector<int> > adj(1);
 std::vector< std::vector<int> > weight(1, std::vector<int> (1, -1));
 
@@ -25,6 +26,7 @@ void update_edge(std::vector<std::string> command);
 void remove_edge(std::vector<std::string> command);
 
 // Link State
+void set_lsrp_longest_path(int source, int i, int* parent);
 void link_state(std::vector<std::string> command);
 void print_lsrp_by_source(int source_node);
 void dijkstra(int source, ll* dist, int* parent);
@@ -113,10 +115,11 @@ void extend_nodes(int new_number_of_nodes) {
 }
 
 void create_edge(std::vector<std::string> command) {
+	number_of_nodes = 1;
+	lsrp_longest_path = 0;
 	if (adj.size() > 0) {
 		adj.clear();
 		adj.push_back(std::vector<int>());
-		number_of_nodes = 1;
 	}
 	if (weight.size() > 0) {
 		weight.clear();
@@ -198,6 +201,16 @@ void remove_edge(std::vector<std::string> command) {
 }
 
 // Link State
+void set_lsrp_longest_path(int source, int i, int* parent) {
+	int lp = 0;
+	while(parent[i] != source) {
+		i = parent[i];
+		lp++;
+	}
+	if (lp + 1 > lsrp_longest_path)
+		lsrp_longest_path = lp + 1;
+}
+
 void print_path_lsrp(int source, int i, int* parent) {
 	std::vector<int> path_leaf_to_root;
 	while(parent[i] != source) {
@@ -214,7 +227,17 @@ void print_path_lsrp(int source, int i, int* parent) {
 
 void print_lsrp_table(int source, ll* dist, int* parent) {
 	std::cout << "Path:\t[s] --> [d]\tMin-Cost\tShortest Path\n";
-	std::cout << "\t-----------\t---------\t-----------------\n";
+	for (int i = 0; i < number_of_nodes; i++) {
+		if (i == source)
+			continue;
+		else 
+			set_lsrp_longest_path(source, i, parent);
+	}
+	std::cout << "\t-----------\t---------\t";
+	int dash_number = ((6 * lsrp_longest_path + 2) > 14) ? 6 * lsrp_longest_path + 2 : 14;
+	for (int i = 0; i < dash_number; i++)
+		std::cout << "-";
+	std::cout << "\n";
 	for (int i = 0; i < number_of_nodes; i++) {
 		if (i == source)
 			continue;
