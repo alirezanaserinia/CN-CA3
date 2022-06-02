@@ -10,6 +10,7 @@ typedef long long int ll;
 
 int number_of_nodes = 1;
 int lsrp_longest_path = 0;
+int dvrp_longest_path = 0;
 std::vector< std::vector<int> > adj(1);
 std::vector< std::vector<int> > weight(1, std::vector<int> (1, -1));
 
@@ -35,6 +36,7 @@ void print_lsrp_table(int source, ll* dist, int* parent);
 void print_path_lsrp(int source, int i, int* parent);
 
 // Distance Vector
+void set_dvrp_longest_path(int source, int i, int* parent);
 void distance_vector(std::vector<std::string> command);
 void print_dvrp_by_source(int source);
 void belman_ford(int source, ll* dist,int* parent);
@@ -117,6 +119,7 @@ void extend_nodes(int new_number_of_nodes) {
 void create_edge(std::vector<std::string> command) {
 	number_of_nodes = 1;
 	lsrp_longest_path = 0;
+	dvrp_longest_path = 0;
 	if (adj.size() > 0) {
 		adj.clear();
 		adj.push_back(std::vector<int>());
@@ -348,6 +351,16 @@ void link_state(std::vector<std::string> command) {
 }
 
 // Distance Vector
+void set_dvrp_longest_path(int source, int i, int* parent) {
+	int lp = 0;
+	while(parent[i] != source) {
+		i = parent[i];
+		lp++;
+	}
+	if (lp + 1 > dvrp_longest_path)
+		dvrp_longest_path = lp + 1;
+}
+
 void print_path_dvrp(int source, int i, int* parent) {
 	std::cout << '[';
 	if (i == source) {
@@ -403,9 +416,20 @@ void print_dvrp_by_source(int source_node) {
 	ll* dist = new ll [number_of_nodes];
 	int* parent = new int [number_of_nodes];
 	belman_ford(source_node, dist, parent);
+	dvrp_longest_path = 0;
+	for (int i = 0; i < number_of_nodes; i++) {
+		if (i == source_node)
+			continue;
+		else 
+			set_dvrp_longest_path(source_node, i, parent);
+	}
 	std::cout << '\n';
 	std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
-	std::cout << "---------------------------------------------------------\n";
+	std::cout << "--------------------------------";
+	int dash_number = ((6 * dvrp_longest_path + 3) > 14) ? 6 * dvrp_longest_path + 3 : 14;
+	for (int i = 0; i < dash_number; i++)
+		std::cout << "-";
+	std::cout << "\n";
 	for (int i = 0; i < number_of_nodes; i++){
 		std::cout << i + 1 << '\t';
 		int next_hop = find_next_hop(source_node, i, parent) + 1;
