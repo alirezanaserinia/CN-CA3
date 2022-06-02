@@ -1,6 +1,0 @@
-topology 1-2-5 1-4-7 2-3-4 3-5-10
-show
-modify 1-2-17
-show
-remove 2-3
-show
