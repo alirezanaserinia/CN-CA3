@@ -111,6 +111,15 @@ void extend_nodes(int new_number_of_nodes) {
 }
 
 void create_edge(std::vector<std::string> command) {
+	if (adj.size() > 0) {
+		adj.clear();
+		adj.push_back(std::vector<int>());
+		number_of_nodes = 1;
+	}
+	if (weight.size() > 0) {
+		weight.clear();
+		weight.push_back(std::vector<int>(number_of_nodes, -1));
+	}
 	for (int i = 1; i < command.size(); i += 3) {
 		int source_node = std::stoi(command[i]) - 1;
 		int destination_node = std::stoi(command[i + 1]) - 1;
