@@ -6,9 +6,11 @@
 #include <algorithm>
 #include <set>
 
+typedef long long int ll;
+
 int number_of_nodes = 1;
 std::vector< std::vector<int> > adj(1);
-std::vector< std::vector<int> > weight(1,std::vector<int> (1,-1));
+std::vector< std::vector<int> > weight(1, std::vector<int> (1, -1));
 
 bool is_delimiter(char charachter);
 std::vector<std::string> split (std::string str);
@@ -25,15 +27,15 @@ void remove_edge(std::vector<std::string> command);
 // Link State
 void link_state(std::vector<std::string> command);
 void print_lsrp_by_source(int source_node);
-void dijkstra(int source, long int* dist, int* parent);
-void print_iteration(int &iter, long int* dist);
-void print_lsrp_table(int source, long int* dist, int* parent);
+void dijkstra(int source, ll* dist, int* parent);
+void print_iteration(int &iter, ll* dist);
+void print_lsrp_table(int source, ll* dist, int* parent);
 void print_path_lsrp(int source, int i, int* parent);
 
 // Distance Vector
 void distance_vector(std::vector<std::string> command);
 void print_dvrp_by_source(int source);
-void belman_ford(int source,long int* dist,int* parent);
+void belman_ford(int source, ll* dist,int* parent);
 int find_next_hop(int source, int i,int* parent);
 void print_path_dvrp(int source, int i, int* parent);
 
@@ -210,7 +212,7 @@ void print_path_lsrp(int source, int i, int* parent) {
 	std::cout << "\n";
 }
 
-void print_lsrp_table(int source, long int* dist, int* parent) {
+void print_lsrp_table(int source, ll* dist, int* parent) {
 	std::cout << "Path:\t[s] --> [d]\tMin-Cost\tShortest Path\n";
 	std::cout << "\t-----------\t---------\t-----------------\n";
 	for (int i = 0; i < number_of_nodes; i++) {
@@ -223,7 +225,7 @@ void print_lsrp_table(int source, long int* dist, int* parent) {
 	}
 }
 
-void print_iteration(int &iter, long int* dist) {
+void print_iteration(int &iter, ll* dist) {
 	std::cout << "\t\titer " << iter << ":" << std::endl;
 	std::cout << "Dest\t\t| ";
 	for (int i = 0; i < number_of_nodes; i++) {
@@ -243,7 +245,7 @@ void print_iteration(int &iter, long int* dist) {
 	std::cout << "\n";
 }
 
-void dijkstra(int source, long int* dist, int* parent) {
+void dijkstra(int source, ll* dist, int* parent) {
 	for (int i = 0; i < number_of_nodes; i++){
 		dist[i] = INT_MAX;
 		parent[i] = -1;
@@ -296,7 +298,7 @@ void dijkstra(int source, long int* dist, int* parent) {
 }
 
 void print_lsrp_by_source(int source_node) {
-	long int* dist = new long int [number_of_nodes];
+	ll* dist = new ll [number_of_nodes];
 	int* parent = new int [number_of_nodes];
 	dijkstra(source_node, dist, parent);
 	print_lsrp_table(source_node, dist, parent);
@@ -352,8 +354,8 @@ int find_next_hop(int source, int i, int* parent) {
 	return i;
 }
 
-void belman_ford(int source, long int* dist, int* parent) {
-	for (int i = 0; i < number_of_nodes; i++){
+void belman_ford(int source, ll* dist, int* parent) {
+	for (int i = 0; i < number_of_nodes; i++) {
 		dist[i] = INT_MAX;
 		parent[i] = -1;
 	}
@@ -374,7 +376,7 @@ void belman_ford(int source, long int* dist, int* parent) {
 }
 
 void print_dvrp_by_source(int source_node) {
-	long int* dist = new long int [number_of_nodes];
+	ll* dist = new ll [number_of_nodes];
 	int* parent = new int [number_of_nodes];
 	belman_ford(source_node, dist, parent);
 	std::cout << '\n';
