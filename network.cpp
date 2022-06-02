@@ -290,7 +290,9 @@ void print_lsrp_by_source(int source_node) {
 	long int* dist = new long int [number_of_nodes];
 	int* parent = new int [number_of_nodes];
 	dijkstra(source_node, dist, parent);
-	print_lsrp_table(source_node, dist, parent);	
+	print_lsrp_table(source_node, dist, parent);
+	delete []dist;
+	delete []parent;
 }
 
 void link_state(std::vector<std::string> command) {
@@ -377,6 +379,8 @@ void print_dvrp_by_source(int source_node) {
 		print_path_dvrp(source_node, i, parent);
 		std::cout << '\n';
 	}
+	delete []dist;
+	delete []parent;
 }
 
 void distance_vector(std::vector<std::string> command) {
