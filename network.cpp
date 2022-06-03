@@ -161,8 +161,8 @@ void show_topology() {
 		std::cout << '\t'<< i + 1;
 	}
 	std::cout <<'\n';
-	for (int i = 0; i < 2 * number_of_nodes + 4; i++) {
-		std::cout<< "---";
+	for (int i = 0; i < 8 * number_of_nodes + 6; i++) {
+		std::cout<< "-";
 	}
 	std::cout <<'\n';
 	for (int i = 0; i < number_of_nodes; i++) {
@@ -280,18 +280,15 @@ void dijkstra(int source, ll* dist, int* parent) {
 	dist[source] = 0;
 	std::set<int> S, V, V_S;
 	S.insert(source);
-
 	for (int i = 0; i < number_of_nodes; i++) {
 		if (i != source)
 			V_S.insert(i);
 		V.insert(i);
 	}
-	
 	for (int i = 0; i < adj[source].size(); i++) {
 		dist[adj[source][i]] = weight[source][adj[source][i]];
 		parent[adj[source][i]] = source;
 	}
-
 	int arg_min, min, u, v, edge_weight, iter = 1 ;
 	while (S != V)	{
 		print_iteration(iter, dist); 
@@ -306,7 +303,6 @@ void dijkstra(int source, ll* dist, int* parent) {
 		u = arg_min;
 		S.insert(u);
 		V_S.erase(u);
-
 		for (int i = 0; i < adj[u].size(); i++) {
 			if (V_S.find(adj[u][i]) != V_S.end()) {
 				v = adj[u][i];
