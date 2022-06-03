@@ -5,6 +5,8 @@
 #include <string>
 #include <algorithm>
 #include <set>
+#include <chrono>
+#include <iomanip>
 
 typedef long long int ll;
 
@@ -379,16 +381,16 @@ void print_dvrp_by_source(int source_node) {
 	ll* dist = new ll [number_of_nodes];
 	int* parent = new int [number_of_nodes];
 	belman_ford(source_node, dist, parent);
-	std::cout << '\n';
-	std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
-	std::cout << "---------------------------------------------------------\n";
+	// std::cout << '\n';
+	// std::cout << "Dest\tNext Hop\tDist\tShorterst path\n";
+	// std::cout << "---------------------------------------------------------\n";
 	for (int i = 0; i < number_of_nodes; i++){
-		std::cout << i + 1 << '\t';
+		// std::cout << i + 1 << '\t';
 		int next_hop = find_next_hop(source_node, i, parent) + 1;
-		std::cout << next_hop << "\t\t";
-		std::cout << dist[i] << '\t';
-		print_path_dvrp(source_node, i, parent);
-		std::cout << '\n';
+		// std::cout << next_hop << "\t\t";
+		// std::cout << dist[i] << '\t';
+		// print_path_dvrp(source_node, i, parent);
+		// std::cout << '\n';
 	}
 	delete []dist;
 	delete []parent;
@@ -400,11 +402,22 @@ void distance_vector(std::vector<std::string> command) {
 		print_dvrp_by_source(source_node);
 	}
 	else if (command.size() == 1){
+		auto start = std::chrono::high_resolution_clock::now();
+
 		for (int source_node = 0; source_node < number_of_nodes; source_node++) {
-			std::cout << "\nSource Node : " << source_node + 1 << "\n";
+			// std::cout << "\nSource Node : " << source_node + 1 << "\n";
 			print_dvrp_by_source(source_node);
-			std::cout << "\n";
+			// std::cout << "\n";
 		}
+
+		// unsync the I/O of C and C++.
+		std::ios_base::sync_with_stdio(false);
+		auto end = std::chrono::high_resolution_clock::now();
+		double time_taken = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		time_taken *= 1e-9;
+		std::cout << "Time taken by program is : " << std::fixed << time_taken << std::setprecision(9);
+		std::cout << " sec\n";
+
 	}
 	else {
 		std::cout << "invalid input!\n";
