@@ -5,6 +5,8 @@
 #include <string>
 #include <algorithm>
 #include <set>
+#include <chrono>
+#include <iomanip>
 
 typedef long long int ll;
 
@@ -267,7 +269,7 @@ void dijkstra(int source, ll* dist, int* parent) {
 
 	int arg_min, min, u, v, edge_weight, iter = 1 ;
 	while (S != V)	{
-		print_iteration(iter, dist); 
+		// print_iteration(iter, dist); 
 		iter++;
 		arg_min = 0, min = INT_MAX;
 		for (auto k = V_S.begin(); k != V_S.end(); k++) {
@@ -300,8 +302,12 @@ void dijkstra(int source, ll* dist, int* parent) {
 void print_lsrp_by_source(int source_node) {
 	ll* dist = new ll [number_of_nodes];
 	int* parent = new int [number_of_nodes];
+
+
 	dijkstra(source_node, dist, parent);
-	print_lsrp_table(source_node, dist, parent);
+	
+
+	// print_lsrp_table(source_node, dist, parent);
 	delete []dist;
 	delete []parent;
 }
@@ -312,11 +318,22 @@ void link_state(std::vector<std::string> command) {
 		print_lsrp_by_source(source_node);
 	}
 	else if (command.size() == 1) {
+		auto start = std::chrono::high_resolution_clock::now();
+
 		for (int source_node = 0; source_node < number_of_nodes; source_node++) {
-			std::cout << "\nSource Node : " << source_node + 1 << "\n";
+			// std::cout << "\nSource Node : " << source_node + 1 << "\n";
 			print_lsrp_by_source(source_node);
-			std::cout << "\n";
+			// std::cout << "\n";
 		}
+
+		// unsync the I/O of C and C++.
+		std::ios_base::sync_with_stdio(false);
+		auto end = std::chrono::high_resolution_clock::now();
+		double time_taken = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		time_taken *= 1e-9;
+		std::cout << "Time taken by program is : " << std::fixed << time_taken << std::setprecision(9);
+		std::cout << " sec\n";
+
 	}
 	else {
 		std::cout << "invalid input!\n";
